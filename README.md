@@ -4,55 +4,66 @@
 
 ---
 
-## 🚀 Setup Instructions
+## 🚀 Setup & Installation
 
-Follow these steps to set up the application for the first time.
-
-### 1. Install Dependencies
-Make sure you have Python installed, then run:
-```bash
-pip install -r requirements.txt
-```
-
-### 2. Configure Environment Variables
-The application uses a `.env` file to store sensitive configuration like the **Admin Password**.
-
-1. **Copy the example environment file**:
-   ```bash
-   cp .env.example .env
-   ```
-   *(Or manually create a file named `.env` and copy the contents of `.env.example` into it).*
-
-2. **Set your Admin Password**:
-   Open `.env` and change `ADMIN_PASSWORD` to your desired password.
-> [!IMPORTANT]
-> The `ADMIN_PASSWORD` you set here will be the password for the `admin` account. The application will always prioritize this password.
-
-### 3. Run the Application
-```bash
-python main.py
-```
-This will:
-- Initialize the database (`accounting.db`) automatically.
-- Open your default web browser to `http://127.0.0.1:5000`.
-
-### 4. Manage Users
-Once logged in as **`admin`**, you can go to the **Users** tab to create accounts for other staff members (Accountants). These users are managed in-app and saved to the database.
+### 1. Developer Setup (Running from source)
+If you are a developer and want to run the project locally:
+1.  **Install Dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+2.  **Run the App**:
+    ```bash
+    python main.py
+    ```
+    - The first time you run this, a `.env` file will be created in your project folder.
+    - Default Admin: `admin` / `admin1234`
 
 ---
 
-## 📦 Building the Installer (setup.iss)
-
-This project includes a **`setup.iss`** file for creating a professional Windows installer using **Inno Setup**.
-
-1. Run `python build_exe.py` to generate the standalone executable.
-2. Compile `setup.iss` using Inno Setup to create the final installer.
+### 2. User Installation (Using the Installer)
+If you have received the `AccountBook_Setup.exe` installer:
+1.  Run the installer and follow the on-screen instructions.
+2.  Once installed, launch **AccountBook** from your Desktop or Start Menu.
+3.  The installation folder will stay clean—no configuration files will clutter your program directory.
 
 ---
 
-## 🌟 Features
-- **Dashboard**: Real-time income/expense charting.
-- **Double-Entry Engine**: Automated journalizing.
-- **Role-Based Access**: Admins manage users and data; Accountants have restricted access.
-- **Reporting**: Full Ledger and Journal with date filtering.
-- **Security**: Environment-based Admin authentication and hashed database passwords for others.
+## ⚙️ Configuration (Post-Installation)
+
+AccountBook stores its data and security settings in a hidden system folder to keep your installation professional and clean.
+
+### Where is my data?
+To find your database, logs, or change your password:
+1.  Press `Win + R` on your keyboard.
+2.  Type **`%APPDATA%\AccountBook`** and press Enter.
+3.  Inside this folder, you will find:
+    - **`accounting.db`**: Your local database file.
+    - **`.env`**: Your security configuration.
+    - **`app_debug.log`**: Technical logs (useful for troubleshooting).
+
+### Changing the Admin Password
+To change the main Admin password after installation:
+1.  Navigate to the `%APPDATA%\AccountBook` folder.
+2.  Open the **`.env`** file with Notepad.
+3.  Change the `ADMIN_PASSWORD` value and Save.
+4.  Restart the application.
+
+---
+
+## 📦 Building the Project
+
+This project is ready for professional distribution.
+
+1.  **Generate EXE**: Run `python build_exe.py` to package the app into the `dist` folder.
+2.  **Generate Installer**: Open `setup.iss` with **Inno Setup** and click **Compile**.
+    - This creates a professional Windows installer in the `Output` folder.
+
+---
+
+## 🌟 Key Features
+- **Clean Interface**: Professional dark-mode dashboard with real-time charting.
+- **Double-Entry Engine**: Every transaction automatically generates balanced Journal Entries.
+- **User Management**: Admins can create and manage Accountant accounts.
+- **Role-Based Security**: Accountants can record transactions; Admins can edit rules and manage staff.
+- **Privacy-First**: All data is stored locally on your machine—never in the cloud.

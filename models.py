@@ -13,10 +13,10 @@ class User(UserMixin, db.Model):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
-        import os
-        # SPECIAL AUTH: If admin, check against environment variable only
+        from config import Config
+        # SPECIAL AUTH: If admin, check against internal hardcoded config
         if self.username == 'admin':
-            return password == os.environ.get('ADMIN_PASSWORD')
+            return password == Config.ADMIN_PASSWORD
         # Otherwise, check DB hash
         return check_password_hash(self.password_hash, password)
 
@@ -45,11 +45,14 @@ class JournalEntry(db.Model):
     credit = db.Column(db.Float, default=0.0)
     date = db.Column(db.DateTime, default=datetime.utcnow)
 
+import logging
+
 def init_db_data():
     from datetime import timedelta
     import random
     import os
     
+    logging.info("Running init_db_data...")
     # Helper to create initial data
     # ADMIN
     # The Admin record MUST exist in the DB for Flask-Login to track session IDs.

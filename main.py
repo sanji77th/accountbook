@@ -3,10 +3,34 @@ import os
 import webbrowser
 from threading import Timer
 from flask import Flask
+import logging
 from config import Config
 from extensions import db, login_manager
 from models import init_db_data, User
 from routes import main_bp
+
+# Set up logging to AppData directory
+log_path = os.path.join(Config.BASE_DIR, 'app_debug.log')
+logging.basicConfig(
+    filename=log_path,
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s: %(message)s'
+)
+
+logging.info("--- App Starting ---")
+logging.info(f"Data and Log directory: {Config.BASE_DIR}")
+
+# Ensure a default .env exists in the data directory if missing
+env_path = os.path.join(Config.BASE_DIR, '.env')
+if not os.path.exists(env_path):
+    with open(env_path, 'w') as f:
+        f.write("# Admin Credentials - Change these for security!\n")
+        f.write("ADMIN_PASSWORD=admin1234\n")
+        f.write("SECRET_KEY=secure_key_placeholder_789\n")
+    logging.info(f"Created default .env at {env_path}")
+    # Reload environment after creation
+    from dotenv import load_dotenv
+    load_dotenv(env_path, override=True)
 
 def create_app():
     if getattr(sys, 'frozen', False):
@@ -20,12 +44,6 @@ def create_app():
 
     app.config.from_object(Config)
     
-    # Patch database URI for frozen app to store DB in AppData or local folder instead of temp
-    if getattr(sys, 'frozen', False):
-        # Use executable directory for DB
-        exe_dir = os.path.dirname(sys.executable)
-        app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(exe_dir, 'accounting.db')
-
     db.init_app(app)
     login_manager.init_app(app)
 
@@ -36,12 +54,15 @@ def create_app():
     app.register_blueprint(main_bp)
 
     with app.app_context():
-        # Create DB if not exists
-        db_path = app.config['SQLALCHEMY_DATABASE_URI'].replace('sqlite:///', '')
-        if not os.path.exists(db_path):
+        try:
+            # Ensure database and core data (Admin user) exist
+            logging.info("Checking/Creating database tables...")
             db.create_all()
+            logging.info("Initializing database data (rules/admin)...")
             init_db_data()
-            print("Database initialized.")
+            logging.info("Initialization complete.")
+        except Exception as e:
+            logging.exception("FAILED TO INITIALIZE DATABASE:")
 
     return app
 
