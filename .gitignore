@@ -27,7 +27,6 @@ dist/
 *.spec
 
 # Inno Setup Output
-# Inno Setup Output
 Output/
 
 # Internal Documentation
