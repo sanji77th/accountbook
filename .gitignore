@@ -27,4 +27,9 @@ dist/
 *.spec
 
 # Inno Setup Output
-Output/
+# Internal Documentation
+DISTRIBUTION_GUIDE.md
+PROJECT_STRUCTURE.md
+ICON_GUIDE.md
+INSTALLER_GUIDE.md
+USER_MANUAL.md

@@ -4,20 +4,7 @@
 
 ---
 
-## 📚 Documentation
-We have detailed guides for everything you need:
-
-| Guide | Description |
-| :--- | :--- |
-| **[User Manual](USER_MANUAL.md)** | **For End Users**. How to login, record transactions, and start reporting. |
-| **[Distribution Guide](DISTRIBUTION_GUIDE.md)** | **For You**. How to share the app with outsiders (just send one file!). |
-| **[Installer Guide](INSTALLER_GUIDE.md)** | **For Developers**. How to build the professional Windows Installer (`setup.exe`). |
-| **[Icon Guide](ICON_GUIDE.md)** | How to customize the application icon. |
-| **[Project Structure](PROJECT_STRUCTURE.md)** | Technical breakdown of every file in the codebase. |
-
----
-
-## 🚀 Quick Start (for Developers)
+##  Quick Start
 
 ### 1. Install Dependencies
 ```bash
@@ -37,12 +24,22 @@ Use these default credentials:
 - **Admin**: `admin` / `admin123`
 - **Accountant**: `user` / `user123`
 
-### 4. Build EXE
-To create a standalone executable:
-```bash
-python build_exe.py
-```
-To create the **Installer**, follow the [Installer Guide](INSTALLER_GUIDE.md).
+---
+
+## 📦 Building the Installer (setup.iss)
+
+This project includes a **`setup.iss`** file, which is a configuration script for **Inno Setup**.
+
+**Inno Setup** is a free tool used to create professional Windows installers (`.exe`). The `setup.iss` script in this repository is pre-configured to:
+1.  Package the compiled `AccountBook.exe`.
+2.  Create a standard Windows Installation Wizard.
+3.  Add Desktop Shortcuts and Start Menu entries.
+4.  Handle Uninstallation automatically.
+
+### How to use it:
+1.  Run `python build_exe.py` to generate the standalone executable in the `dist/` folder.
+2.  Open `setup.iss` with Inno Setup Compiler.
+3.  Click **Compile** to generate the final `Option/AccountBook_Setup.exe` installer.
 
 ---
 
