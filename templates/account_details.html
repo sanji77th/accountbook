@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb mb-1">
+                <li class="breadcrumb-item"><a href="{{ url_for('main.ledger') }}">Ledger</a></li>
+                <li class="breadcrumb-item active">{{ account_name }}</li>
+            </ol>
+        </nav>
+        <h2 class="fw-bold">{{ account_name }}</h2>
+        <p class="text-secondary">Transaction history and running balance</p>
+    </div>
+    <div>
+        <a href="{{ url_for('main.ledger') }}" class="btn btn-outline-secondary">Back to Summary</a>
+    </div>
+</div>
+
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="GET" class="row g-3 align-items-end">
+            <div class="col-md-4">
+                <label class="form-label small text-uppercase fw-bold text-secondary">Start Date</label>
+                <input type="date" name="start_date" class="form-control" value="{{ start_date or '' }}">
+            </div>
+            <div class="col-md-4">
+                <label class="form-label small text-uppercase fw-bold text-secondary">End Date</label>
+                <input type="date" name="end_date" class="form-control" value="{{ end_date or '' }}">
+            </div>
+            <div class="col-md-4 d-flex gap-2">
+                <button type="submit" class="btn btn-primary w-100"><i
+                        class="fa-solid fa-filter me-2"></i>Filter</button>
+                <a href="{{ url_for('main.account_details', account_name=account_name) }}"
+                    class="btn btn-outline-secondary"><i class="fa-solid fa-rotate-left"></i></a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table align-middle table-hover mb-0">
+                <thead class="bg-light bg-opacity-10">
+                    <tr>
+                        <th class="ps-4">Date</th>
+                        <th>Description</th>
+                        <th class="text-end">Debit</th>
+                        <th class="text-end">Credit</th>
+                        <th class="text-end">Running Bal</th>
+                        {% if current_user.role == 'admin' %}
+                        <th class="text-end pe-4">Action</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in entries %}
+                    <tr>
+                        <td class="ps-4 text-secondary small">{{ item.obj.date.strftime('%Y-%m-%d') }}</td>
+                        <td class="fw-medium">
+                            {{ item.obj.transaction.description }}
+                            <br>
+                            <small class="text-secondary text-xs">Ref: #{{ item.obj.transaction_id }}</small>
+                        </td>
+                        <td class="text-end font-monospace text-secondary">{{ "%.2f"|format(item.obj.debit) if
+                            item.obj.debit > 0 else '-' }}</td>
+                        <td class="text-end font-monospace text-secondary">{{ "%.2f"|format(item.obj.credit) if
+                            item.obj.credit > 0 else '-' }}</td>
+                        <td
+                            class="text-end font-monospace fw-bold {{ 'text-success' if item.balance > 0 else 'text-danger' }}">
+                            {{ "%.2f"|format(item.balance) }}
+                        </td>
+                        {% if current_user.role == 'admin' %}
+                        <td class="text-end pe-4">
+                            <div class="d-flex justify-content-end gap-2">
+                                <a href="{{ url_for('main.edit_transaction', id=item.obj.transaction_id) }}"
+                                    class="btn btn-sm btn-outline-primary border-0"><i class="fa-solid fa-pen"></i></a>
+                                <form action="{{ url_for('main.delete_transaction', id=item.obj.transaction_id) }}"
+                                    method="POST"
+                                    onsubmit="return confirm('Delete this transaction? This will remove entries from all affected accounts.');">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger border-0"><i
+                                            class="fa-solid fa-trash"></i></button>
+                                </form>
+                            </div>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="text-center py-4 text-muted">No transactions found for this period.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

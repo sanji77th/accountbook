@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-4 mb-4">
+        <div class="card">
+            <div class="card-header bg-transparent border-0 pt-4 px-4">
+                <h5 class="fw-bold mb-0">Define Rule</h5>
+                <small class="text-secondary">Map Types to Accounts</small>
+            </div>
+            <div class="card-body">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small text-uppercase fw-bold">Transaction Type
+                            Name</label>
+                        <input type="text" name="transaction_type" class="form-control" placeholder="e.g. Rent Payment"
+                            required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-secondary small text-uppercase fw-bold">Debit Account</label>
+                        <input type="text" name="debit_account" class="form-control" placeholder="e.g. Rent Expense"
+                            required>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-secondary small text-uppercase fw-bold">Credit Account</label>
+                        <input type="text" name="credit_account" class="form-control" placeholder="e.g. Cash" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="fa-solid fa-plus me-2"></i>Add Rule
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-header bg-transparent border-0 pt-4 px-4">
+                <h5 class="fw-bold mb-0">Existing Rules</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead class="bg-light bg-opacity-10">
+                            <tr>
+                                <th class="ps-4">Type</th>
+                                <th>Debit (Dr)</th>
+                                <th>Credit (Cr)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rule in rules %}
+                            <tr>
+                                <td class="ps-4 fw-bold">{{ rule.transaction_type }}</td>
+                                <td class="text-danger">{{ rule.debit_account }}</td>
+                                <td class="text-success">{{ rule.credit_account }}</td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="3" class="text-center py-4 text-muted">No rules defined.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

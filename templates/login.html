@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="col-md-4">
+        <div class="card p-4 shadow-lg">
+            <div class="text-center mb-4">
+                <i class="fa-solid fa-wallet fa-3x text-primary mb-3"></i>
+                <h2 class="fw-bold">Welcome Back</h2>
+                <p class="text-secondary">Sign in to your accounting dashboard</p>
+            </div>
+
+            <form method="POST">
+                <div class="mb-3">
+                    <label class="form-label text-secondary small text-uppercase fw-bold">Username</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0"><i
+                                class="fa-solid fa-user text-secondary"></i></span>
+                        <input type="text" name="username" class="form-control border-start-0 ps-0"
+                            placeholder="admin or user" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label text-secondary small text-uppercase fw-bold">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-end-0"><i
+                                class="fa-solid fa-lock text-secondary"></i></span>
+                        <input type="password" name="password" class="form-control border-start-0 ps-0"
+                            placeholder="••••••••" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary w-100 py-2 rounded-3">Sign In</button>
+            </form>
+            <div class="mt-4 text-center">
+                <small class="text-secondary">Default: admin/admin123 or user/user123</small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

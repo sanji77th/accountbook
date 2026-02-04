@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h2 class="fw-bold">Dashboard</h2>
+        <p class="text-secondary">Overview of financial performance</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{{ url_for('main.transactions') }}" class="btn btn-primary"><i class="fa-solid fa-plus me-2"></i>New
+            Transaction</a>
+    </div>
+</div>
+
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm bg-success bg-opacity-10">
+            <div class="card-body">
+                <h6 class="text-success text-uppercase fw-bold small">Total Sales</h6>
+                <div class="d-flex align-items-center mt-2">
+                    <i class="fa-solid fa-arrow-trend-up fa-2x text-success me-3"></i>
+                    <h2 class="mb-0 fw-bold">${{ "%.2f"|format(income) }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm bg-danger bg-opacity-10">
+            <div class="card-body">
+                <h6 class="text-danger text-uppercase fw-bold small">Total Expenses</h6>
+                <div class="d-flex align-items-center mt-2">
+                    <i class="fa-solid fa-arrow-trend-down fa-2x text-danger me-3"></i>
+                    <h2 class="mb-0 fw-bold">${{ "%.2f"|format(expense) }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 border-0 shadow-sm bg-primary bg-opacity-10">
+            <div class="card-body">
+                <h6 class="text-primary text-uppercase fw-bold small">Net Profit</h6>
+                <div class="d-flex align-items-center mt-2">
+                    <i class="fa-solid fa-sack-dollar fa-2x text-primary me-3"></i>
+                    <h2 class="mb-0 fw-bold">${{ "%.2f"|format(income - expense) }}</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-8">
+        <div class="card h-100">
+            <div class="card-header bg-transparent border-0 pt-4 px-4">
+                <h5 class="fw-bold mb-0">Financial Overview</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="overviewChart" style="max-height: 300px;"></canvas>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100">
+            <div class="card-header bg-transparent border-0 pt-4 px-4">
+                <h5 class="fw-bold mb-0">Recent Activity</h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush rounded-bottom">
+                    {% for tx in recent_transactions %}
+                    <div class="list-group-item bg-transparent px-4 py-3 border-light-subtle">
+                        <div class="d-flex w-100 justify-content-between align-items-center">
+                            <div>
+                                <h6 class="mb-1 fw-bold">{{ tx.description }}</h6>
+                                <small class="text-secondary">{{ tx.transaction_type }}</small>
+                            </div>
+                            <span
+                                class="badge {{ 'bg-success' if tx.transaction_type == 'Sales' else 'bg-secondary' }} rounded-pill">
+                                ${{ "%.2f"|format(tx.amount) }}
+                            </span>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="p-4 text-center text-muted">No recent transactions</div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+<script>
+    const ctx = document.getElementById('overviewChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Income', 'Expense'],
+            datasets: [{
+                data: [{{ income }}, {{ expense }}],
+        backgroundColor: ['#10b981', '#ef4444'],
+        borderWidth: 0,
+        hoverOffset: 4
+    }]
+        },
+        options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom'
+            }
+        }
+    }
+    });
+</script>
+{% endblock %}
