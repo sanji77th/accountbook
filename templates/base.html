@@ -47,6 +47,10 @@
                         <a class="nav-link {{ 'active' if request.endpoint == 'main.rules' }}"
                             href="{{ url_for('main.rules') }}">Rules</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link {{ 'active' if request.endpoint == 'main.users' or request.endpoint == 'main.create_user' }}"
+                            href="{{ url_for('main.users') }}">Users</a>
+                    </li>
                     {% endif %}
                 </ul>
                 <div class="d-flex align-items-center gap-3">

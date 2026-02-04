@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-5">
+        <div class="card shadow-sm border-0">
+            <div class="card-header bg-transparent py-3 text-center border-0">
+                <h4 class="fw-bold mb-0">Create New User</h4>
+                <p class="text-secondary small mb-0">Add a new Staff Member or Accountant</p>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST">
+                    <div class="mb-3">
+                        <label class="form-label text-uppercase small fw-bold text-secondary">Username</label>
+                        <input type="text" name="username" class="form-control" required placeholder="e.g. john_doe">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label text-uppercase small fw-bold text-secondary">Password</label>
+                        <input type="password" name="password" class="form-control" required
+                            placeholder="Min 6 characters">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label text-uppercase small fw-bold text-secondary">Role</label>
+                        <select name="role" class="form-select">
+                            <option value="accountant">Accountant (Restricted)</option>
+                            <option value="admin">Admin (Full Access)</option>
+                        </select>
+                        <div class="form-text mt-2">
+                            <i class="fa-solid fa-shield-halved me-1"></i>
+                            Admins can delete transactions and manage other users.
+                        </div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary">Create User</button>
+                        <a href="{{ url_for('main.users') }}" class="btn btn-light text-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

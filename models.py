@@ -13,6 +13,11 @@ class User(UserMixin, db.Model):
         self.password_hash = generate_password_hash(password)
 
     def check_password(self, password):
+        import os
+        # SPECIAL AUTH: If admin, check against environment variable only
+        if self.username == 'admin':
+            return password == os.environ.get('ADMIN_PASSWORD')
+        # Otherwise, check DB hash
         return check_password_hash(self.password_hash, password)
 
 class Rule(db.Model):
@@ -43,17 +48,20 @@ class JournalEntry(db.Model):
 def init_db_data():
     from datetime import timedelta
     import random
+    import os
     
     # Helper to create initial data
+    # ADMIN
+    # The Admin record MUST exist in the DB for Flask-Login to track session IDs.
+    # However, the password check is done against .env, bypassing the DB hash.
     if not User.query.filter_by(username='admin').first():
         admin = User(username='admin', role='admin')
-        admin.set_password('admin123')
+        admin.set_password('EXTERNAL_AUTH_ONLY') 
         db.session.add(admin)
+        db.session.commit()
     
-    if not User.query.filter_by(username='user').first():
-        user = User(username='user', role='accountant')
-        user.set_password('user123')
-        db.session.add(user)
+    # NOTE: Default 'user' is no longer created here. 
+    # Use the User Management UI to add staff.
 
     # Default Rules
     default_rules = [

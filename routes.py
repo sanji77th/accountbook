@@ -39,10 +39,16 @@ def login():
         username = request.form.get('username')
         password = request.form.get('password')
         user = User.query.filter_by(username=username).first()
-        if user and user.check_password(password):
-            login_user(user)
-            return redirect(url_for('main.dashboard'))
-        flash('Invalid username or password', 'danger')
+        
+        if user:
+            is_correct = user.check_password(password)
+            if is_correct:
+                login_user(user)
+                return redirect(url_for('main.dashboard'))
+            else:
+                flash('Invalid password', 'danger')
+        else:
+            flash('User not found in database', 'danger')
     return render_template('login.html')
 
 @main_bp.route('/logout')
@@ -209,6 +215,57 @@ def edit_transaction(id):
             flash(f'Error updating transaction: {str(e)}', 'danger')
 
     return render_template('edit_transaction.html', transaction=tx, rules=rules)
+
+# --- USER MANAGEMENT ---
+@main_bp.route('/users')
+@login_required
+@admin_required
+def users():
+    # Only show 'accountant' users, or all users. Let's show all except myself maybe?
+    # Or just show all.
+    all_users = User.query.all()
+    return render_template('users.html', users=all_users)
+
+@main_bp.route('/create_user', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def create_user():
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        role = request.form.get('role', 'accountant')
+        
+        if User.query.filter_by(username=username).first():
+            flash('Username already exists', 'danger')
+        else:
+            try:
+                new_user = User(username=username, role=role)
+                new_user.set_password(password)
+                db.session.add(new_user)
+                db.session.commit()
+                flash(f'User {username} created successfully.', 'success')
+                return redirect(url_for('main.users'))
+            except Exception as e:
+                flash(f'Error creating user: {str(e)}', 'danger')
+                
+    return render_template('create_user.html')
+
+@main_bp.route('/delete_user/<int:id>', methods=['POST'])
+@login_required
+@admin_required
+def delete_user(id):
+    user = User.query.get_or_404(id)
+    if user.username == 'admin':
+        flash('Cannot delete the Admin user.', 'danger')
+        return redirect(url_for('main.users'))
+        
+    try:
+        db.session.delete(user)
+        db.session.commit()
+        flash('User deleted successfully.', 'success')
+    except Exception as e:
+        flash(f'Error deleting user: {str(e)}', 'danger')
+    return redirect(url_for('main.users'))
 
 @main_bp.route('/ledger')
 @login_required
