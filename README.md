@@ -17,15 +17,14 @@ pip install -r requirements.txt
 ### 2. Configure Environment Variables
 The application uses a `.env` file to store sensitive configuration like the **Admin Password**.
 
-1. Create a file named **`.env`** in the root directory of the project.
-2. Add the following content to the file:
-```text
-# Main Admin Credentials
-ADMIN_PASSWORD=your_secure_password_here
+1. **Copy the example environment file**:
+   ```bash
+   cp .env.example .env
+   ```
+   *(Or manually create a file named `.env` and copy the contents of `.env.example` into it).*
 
-# Flask Secret Key (Random string for security)
-SECRET_KEY=any_random_long_string_here
-```
+2. **Set your Admin Password**:
+   Open `.env` and change `ADMIN_PASSWORD` to your desired password.
 > [!IMPORTANT]
 > The `ADMIN_PASSWORD` you set here will be the password for the `admin` account. The application will always prioritize this password.
 
